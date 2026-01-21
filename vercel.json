@@ -1,7 +1,12 @@
 {
+  "functions": {
+    "api/**/*.ts": {
+      "includeFiles": "nasa_projects_2025.db"
+    }
+  },
   "rewrites": [
-    { "source": "/api/categorias/:cat", "destination": "/api/categorias/[cat].mts" },
-    { "source": "/api/search", "destination": "/api/search.mts" },
+    { "source": "/api/categorias/:cat", "destination": "/api/categorias/[cat].ts" },
+    { "source": "/api/search", "destination": "/api/search.ts" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "outputDirectory": "dist"

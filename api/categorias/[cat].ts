@@ -2,7 +2,7 @@ import { VercelRequest, VercelResponse } from '@vercel/node';
 import Database from 'better-sqlite3';
 import path from 'path';
 
-const dbPath = path.resolve(process.cwd(), 'nasa_projects_2025.db');
+const dbPath = path.join(process.cwd(), 'nasa_projects_2025.db');
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { cat } = req.query;
