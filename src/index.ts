@@ -37,7 +37,16 @@ const server = serve({
           const results = db.query("SELECT DISTINCT display_name FROM locations WHERE display_name IS NOT NULL ORDER BY display_name").all() as { display_name: string }[];
           return Response.json({ cont: results.map(r => r.display_name) });
         } else if (categoria === "projects") {
-          return Response.json({ cont: [] });
+          // Extraer "Temas" de las descripciones de los challenges (el texto en el último paréntesis)
+          const results = db.query("SELECT description FROM challenges WHERE description LIKE '%(%)%'").all() as { description: string }[];
+          const temas = new Set<string>();
+          results.forEach(r => {
+            const match = r.description.match(/\(([^)]+)\)\s*$/);
+            if (match) {
+              temas.add(match[1]);
+            }
+          });
+          return Response.json({ cont: Array.from(temas).sort() });
         }
 
         const resultadoRaw = db.query(`PRAGMA table_info(${categoria})`).all() as ColumnInfo[];
@@ -52,6 +61,7 @@ const server = serve({
       async POST(req) {
         const body = await req.json() as { 
           query?: string, 
+          projects?: string[],
           challenges?: string[], 
           locations?: string[],
           hasAward?: boolean,
@@ -59,7 +69,7 @@ const server = serve({
           limit?: number, 
           offset?: number 
         };
-        const { query, challenges = [], locations = [], hasAward = false, orderBy = "default", limit = 50, offset = 0 } = body;
+        const { query, projects = [], challenges = [], locations = [], hasAward = false, orderBy = "default", limit = 50, offset = 0 } = body;
 
         let whereClause = " WHERE 1=1";
         const params: any[] = [];
@@ -67,6 +77,12 @@ const server = serve({
         if (query && query.trim() !== "") {
           whereClause += " AND p.name LIKE ?";
           params.push(`%${query.trim()}%`);
+        }
+
+        if (projects.length > 0) {
+          const placeholders = projects.map(() => "?").join(",");
+          whereClause += ` AND p.name IN (${placeholders})`;
+          params.push(...projects);
         }
 
         if (challenges.length > 0) {
@@ -82,7 +98,7 @@ const server = serve({
         }
 
         if (hasAward) {
-          whereClause += " AND p.badges IS NOT NULL AND p.badges != ''";
+          whereClause += " AND p.badges LIKE '%Winner%'";
         }
 
         const baseSql = `
@@ -96,9 +112,9 @@ const server = serve({
         const totalResult = db.query(countSql).get(...params) as { total: number };
         const total = totalResult ? totalResult.total : 0;
 
-        let orderClause = "ORDER BY p.id ASC";
+        let orderClause = "";
         if (orderBy === "awards") {
-          // Count commas + 1. If null or empty, 0.
+          // Count awards by counting commas + 1 for non-empty badges
           orderClause = `
             ORDER BY (
               CASE 
@@ -107,6 +123,23 @@ const server = serve({
               END
             ) DESC, p.id ASC
           `;
+        } else {
+          // Default/Relevance sort:
+          // 1. Projects with awards first (score 0 for awarded, 1 for none)
+          // 2. If query exists, prioritize names starting with it
+          // 3. Fallback to ID
+          const hasAwardScore = "(CASE WHEN p.badges IS NULL OR p.badges = '' THEN 1 ELSE 0 END)";
+          if (query && query.trim() !== "") {
+            const trimmedQuery = query.trim();
+            orderClause = `
+              ORDER BY 
+                ${hasAwardScore} ASC,
+                (CASE WHEN p.name LIKE '${trimmedQuery}%' THEN 0 ELSE 1 END) ASC,
+                p.id ASC
+            `;
+          } else {
+            orderClause = `ORDER BY ${hasAwardScore} ASC, p.id ASC`;
+          }
         }
 
         const selectSql = `

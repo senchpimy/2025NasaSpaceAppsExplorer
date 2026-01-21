@@ -5,7 +5,7 @@ import "./index.css";
 
 function Navbar() {
   const location = useLocation();
-  
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-black/30 backdrop-blur-md border-b border-white/10">
       <div className="flex items-center gap-3">
@@ -16,7 +16,7 @@ function Navbar() {
       <div className="hidden md:flex items-center gap-8 text-xs font-bold tracking-widest text-gray-400">
         <Link to="/" className={`hover:text-white transition-colors ${location.pathname === "/" ? "text-white" : ""}`}>CHALLENGES</Link>
         <Link to="/stats" className={`hover:text-white transition-colors ${location.pathname === "/stats" ? "text-white" : ""}`}>STATS</Link>
-        <span className="cursor-pointer hover:text-white transition-colors">WINNERS</span>
+        <Link to="/?filter=winners" className={`hover:text-white transition-colors ${location.search.includes("filter=winners") ? "text-white" : ""}`}>WINNERS</Link>
       </div>
 
       <div className="w-32 md:flex hidden"></div>
