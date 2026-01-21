@@ -25,6 +25,8 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-
+  "ts-node": {
+    "esm": true
+  },
   "exclude": ["dist", "node_modules"]
 }
