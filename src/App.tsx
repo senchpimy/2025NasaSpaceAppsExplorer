@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 import { Selector } from "./Selector";
 import { Stats } from "./Stats";
+import { motion, AnimatePresence } from "framer-motion";
 import "./index.css";
 
 function Navbar() {
@@ -9,8 +10,6 @@ function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-black/30 backdrop-blur-md border-b border-white/10">
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-400 to-cyan-300 shadow-[0_0_15px_rgba(56,189,248,0.5)]"></div>
-        <span className="font-serif text-xl tracking-widest text-white font-bold">SPACE APPS</span>
       </div>
 
       <div className="hidden md:flex items-center gap-8 text-xs font-bold tracking-widest text-gray-400">
@@ -24,16 +23,50 @@ function Navbar() {
   );
 }
 
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route
+          path="/"
+          element={
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Selector />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/stats"
+          element={
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Stats />
+            </motion.div>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 export function App() {
   return (
     <Router>
       <div className="min-h-screen text-white overflow-x-hidden">
         <Navbar />
         <main className="pt-20 min-h-screen">
-          <Routes>
-            <Route path="/" element={<Selector />} />
-            <Route path="/stats" element={<Stats />} />
-          </Routes>
+          <AnimatedRoutes />
         </main>
       </div>
     </Router>
@@ -41,3 +74,4 @@ export function App() {
 }
 
 export default App;
+
