@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/api/categorias/:cat", "destination": "/api/categorias/[cat].mts" },
+    { "source": "/api/search", "destination": "/api/search.mts" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "outputDirectory": "dist"
+}

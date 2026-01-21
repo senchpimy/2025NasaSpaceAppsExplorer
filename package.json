@@ -4,11 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun --hot src/index.ts",
-    "start": "NODE_ENV=production bun src/index.ts",
-    "build": "bun run build.ts"
+    "dev": "bun src/index.ts",
+    "build": "bun build.ts",
+    "start": "bun src/index.ts"
   },
   "dependencies": {
+    "better-sqlite3": "^12.6.2",
     "bun-plugin-tailwind": "^0.1.2",
     "d3": "^7.9.0",
     "framer-motion": "^12.27.5",
@@ -18,9 +19,11 @@
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/bun": "latest",
     "@types/d3": "^7.4.3",
     "@types/react": "^19",
-    "@types/react-dom": "^19"
+    "@types/react-dom": "^19",
+    "@vercel/node": "^5.5.25"
   }
 }
