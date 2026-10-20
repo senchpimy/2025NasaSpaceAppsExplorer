@@ -7,6 +7,8 @@
   "rewrites": [
     { "source": "/api/categorias/:cat", "destination": "/api/categorias/[cat].ts" },
     { "source": "/api/search", "destination": "/api/search.ts" },
+    { "source": "/api/facets", "destination": "/api/facets.ts" },
+    { "source": "/api/stats", "destination": "/api/stats.ts" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "outputDirectory": "dist"

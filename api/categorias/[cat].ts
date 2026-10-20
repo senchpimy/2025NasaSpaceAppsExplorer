@@ -3,6 +3,12 @@ import Database from 'better-sqlite3';
 import path from 'path';
 
 const dbPath = path.join(process.cwd(), 'nasa_projects_2025.db');
+const AVAILABLE_YEARS = [2025, 2024, 2023];
+
+function parseYear(value: unknown): number {
+  const year = Number(value);
+  return AVAILABLE_YEARS.includes(year) ? year : 2025;
+}
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { cat } = req.query;
@@ -20,19 +26,37 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const categoria = cat as string;
+    const year = parseYear(req.query.year);
     
     if (categoria === "challenges") {
-      const results = db.prepare("SELECT DISTINCT title FROM challenges WHERE title IS NOT NULL ORDER BY title").all() as { title: string }[];
+      const results = db.prepare(`
+        SELECT DISTINCT c.title
+        FROM challenges c
+        JOIN projects p ON p.challenge = c.id
+        WHERE p.year = ? AND c.title IS NOT NULL
+        ORDER BY c.title
+      `).all(year) as { title: string }[];
       return res.status(200).json({ cont: results.map(r => r.title) });
     } else if (categoria === "locations") {
-      const results = db.prepare("SELECT DISTINCT display_name FROM locations WHERE display_name IS NOT NULL ORDER BY display_name").all() as { display_name: string }[];
+      const results = db.prepare(`
+        SELECT DISTINCT l.display_name
+        FROM locations l
+        JOIN projects p ON p.location = l.id
+        WHERE p.year = ? AND l.display_name IS NOT NULL
+        ORDER BY l.display_name
+      `).all(year) as { display_name: string }[];
       return res.status(200).json({ cont: results.map(r => r.display_name) });
     } else if (categoria === "projects") {
-      const results = db.prepare("SELECT description FROM challenges WHERE description LIKE '%(%)%'").all() as { description: string }[];
+      const results = db.prepare(`
+        SELECT DISTINCT c.description
+        FROM challenges c
+        JOIN projects p ON p.challenge = c.id
+        WHERE p.year = ? AND c.description LIKE '%(%)%'
+      `).all(year) as { description: string }[];
       const temas = new Set<string>();
       results.forEach(r => {
         const match = r.description.match(/\(([^)]+)\)\s*$/);
-        if (match) {
+        if (match?.[1]) {
           temas.add(match[1]);
         }
       });
