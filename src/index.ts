@@ -1,8 +1,8 @@
 import { serve } from "bun";
 import index from "./index.html";
 import { Database } from "bun:sqlite";
-import { computeStats, type StatsDb } from "../api/_lib/statsData";
-import { computeFacets, parseFilters, searchProjects, type QueryDb } from "../api/_lib/query";
+import { computeStats, type StatsDb } from "../server/lib/statsData";
+import { computeFacets, parseFilters, searchProjects, type QueryDb } from "../server/lib/query";
 
 const db = new Database("nasa_projects_2025.db", { readonly: true });
 

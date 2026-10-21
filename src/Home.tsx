@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useYear } from "./year";
 import { BadgeTags } from "./BadgeTags";
-import type { StatsReport } from "../api/_lib/statsData";
+import type { StatsReport } from "../server/lib/statsData";
 
 const EXAMPLES: Array<{ label: string; params: Record<string, string> }> = [
   { label: "exoplanetas", params: { q: "exoplanetas" } },

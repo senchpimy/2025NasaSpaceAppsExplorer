@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun src/index.ts",
-    "build": "bun build.ts",
+    "build": "bun build.ts && bun scripts/build-api.ts",
+    "build:api": "bun scripts/build-api.ts",
     "start": "bun src/index.ts"
   },
   "dependencies": {
