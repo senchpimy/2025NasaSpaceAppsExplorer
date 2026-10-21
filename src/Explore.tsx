@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useYear } from "./year";
+import { BadgeTags } from "./BadgeTags";
 import type { AwardLevel, CountryFacet, Facets, ProjectResult, SortKey } from "./query";
 
 const PAGE_SIZE = 24;
@@ -15,6 +16,13 @@ const SORTS: Array<{ value: SortKey; label: string }> = [
   { value: "nombre", label: "Nombre A–Z" },
   { value: "pais", label: "País" },
 ];
+
+const FILTER_KIND: Record<string, string> = {
+  q: "Búsqueda",
+  reto: "Reto",
+  lugar: "Lugar",
+  premio: "Premio",
+};
 
 function listParam(params: URLSearchParams, key: string): string[] {
   return params.getAll(key);
@@ -31,19 +39,6 @@ function mergeProjects(pages: Array<{ items: ProjectResult[] }>): ProjectResult[
     }
   }
   return merged;
-}
-
-function AwardBadge({ award }: { award: ProjectResult["award"] }) {
-  if (award === "ganador") {
-    return <span className="award award-winner"><span aria-hidden="true">★</span> Ganador</span>;
-  }
-  if (award === "finalista") {
-    return <span className="award award-finalist"><span aria-hidden="true">◆</span> Finalista</span>;
-  }
-  if (award === "nominado") {
-    return <span className="award award-nominee">Nominado</span>;
-  }
-  return null;
 }
 
 function Highlight({ text, query }: { text: string; query: string }) {
@@ -547,11 +542,11 @@ export function Explore() {
   };
 
   const activeChips = [
-    ...(q ? [{ key: "q" as const, label: `“${q}”`, value: q }] : []),
-    ...retos.map((value) => ({ key: "reto" as const, label: value, value })),
-    ...paises.map((value) => ({ key: "pais" as const, label: value, value })),
-    ...ciudades.map((value) => ({ key: "ciudad" as const, label: value, value })),
-    ...premios.map((value) => ({ key: "premio" as const, label: AWARDS.find((item) => item.value === value)?.label ?? value, value })),
+    ...(q ? [{ key: "q" as const, kind: "q", label: `“${q}”`, value: q }] : []),
+    ...retos.map((value) => ({ key: "reto" as const, kind: "reto", label: value, value })),
+    ...paises.map((value) => ({ key: "pais" as const, kind: "lugar", label: value, value })),
+    ...ciudades.map((value) => ({ key: "ciudad" as const, kind: "lugar", label: value, value })),
+    ...premios.map((value) => ({ key: "premio" as const, kind: "premio", label: AWARDS.find((item) => item.value === value)?.label ?? value, value })),
   ];
 
   const awardCounts = facets?.awards;
@@ -668,12 +663,13 @@ export function Explore() {
             <div className="mb-4 flex flex-wrap items-center gap-2">
               <span className="label">Filtros activos:</span>
               {activeChips.map((chip) => (
-                <span key={`${chip.key}-${chip.value}`} className="chip" data-selected="true">
+                <span key={`${chip.key}-${chip.value}`} className="chip chip-filter" data-selected="true" data-kind={chip.kind}>
+                  <span className="text-xs font-medium text-tertiary">{FILTER_KIND[chip.kind]}</span>
                   <span className="max-w-[16rem] truncate">{chip.label}</span>
                   <button
                     type="button"
                     className="chip-remove"
-                    aria-label={`Quitar filtro ${chip.label}`}
+                    aria-label={`Quitar filtro de ${FILTER_KIND[chip.kind]}: ${chip.label}`}
                     onClick={() => {
                       if (chip.key === "q") { setQInput(""); update({ q: undefined }); }
                       else if (chip.key === "premio") update({ premio: premios.filter((value) => value !== chip.value) });
@@ -734,12 +730,13 @@ export function Explore() {
                         <span aria-hidden="true">⌖</span>
                         <span className="line-clamp-2">{project.location || "Ubicación no registrada"}</span>
                       </span>
-                      <AwardBadge award={project.award} />
                     </div>
 
                     <h3 className="card-title" title={project.name}>
                       <Highlight text={project.name} query={q} />
                     </h3>
+
+                    <BadgeTags badges={project.badges} />
 
                     <p className="card-challenge">
                       <span aria-hidden="true">◈</span>

@@ -16,6 +16,7 @@
   --color-context: #6b746e;
   --color-action: #d4ff3f;
   --color-award: #f5b83d;
+  --color-place: #7dd3fc;
   --color-negative: #ff6b5b;
 }
 
@@ -31,6 +32,7 @@
   --context: #6b746e;
   --action: #d4ff3f;
   --award: #f5b83d;
+  --place: #7dd3fc;
   --negative: #ff6b5b;
   color-scheme: dark;
 }
@@ -328,6 +330,47 @@
   }
 
   .chip-remove:hover { border-color: var(--primary); color: var(--primary); }
+
+  .chip-filter {
+    --chip-accent: var(--control);
+  }
+
+  .chip-filter[data-kind="reto"] {
+    --chip-accent: var(--action);
+    border-color: rgba(212, 255, 63, 0.55);
+    background: rgba(212, 255, 63, 0.08);
+  }
+
+  .chip-filter[data-kind="lugar"] {
+    --chip-accent: var(--place);
+    border-color: rgba(125, 211, 252, 0.55);
+    background: rgba(125, 211, 252, 0.08);
+  }
+
+  .chip-filter[data-kind="premio"] {
+    --chip-accent: var(--award);
+    border-color: rgba(245, 184, 61, 0.6);
+    background: rgba(245, 184, 61, 0.1);
+  }
+
+  .chip-filter[data-kind="q"] {
+    --chip-accent: var(--secondary);
+    border-color: var(--control);
+    background: transparent;
+  }
+
+  .chip-filter[data-selected="true"] {
+    border-color: var(--chip-accent);
+  }
+
+  .chip-filter[data-selected="true"]::before {
+    color: var(--chip-accent);
+  }
+
+  .chip-filter .chip-remove {
+    border-color: var(--chip-accent);
+    color: var(--chip-accent);
+  }
 
   .segmented {
     display: flex;

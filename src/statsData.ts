@@ -10,6 +10,7 @@ export type Winner = {
   link: string;
   country: string;
   award: string;
+  badges: string | null;
 };
 
 export type FunnelStep = {
@@ -355,6 +356,6 @@ export function computeStats(db: StatsDb, year: number): StatsReport {
     funnel,
     winnersByCountry,
     localGlobal,
-    winners: winners.map((row) => ({ name: row.name, link: row.link, country: row.country || "Sin país", award: "Ganador global" })),
+    winners: winners.map((row) => ({ name: row.name, link: row.link, country: row.country || "Sin país", award: "Ganador global", badges: row.badges })),
   };
 }

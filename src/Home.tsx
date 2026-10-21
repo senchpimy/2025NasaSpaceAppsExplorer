@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useYear } from "./year";
+import { BadgeTags } from "./BadgeTags";
 import type { StatsReport } from "./statsData";
 
 const EXAMPLES: Array<{ label: string; params: Record<string, string> }> = [
@@ -159,9 +160,9 @@ export function Home() {
             >
               <div className="flex items-start justify-between gap-3">
                 <span className="meta">{winner.country}</span>
-                <span className="award award-winner"><span aria-hidden="true">★</span> Ganador</span>
               </div>
               <span className="card-title">{winner.name}</span>
+              <BadgeTags badges={winner.badges} />
               <span className="card-link mt-auto">Ver proyecto <span aria-hidden="true">↗</span></span>
             </a>
           ))}
