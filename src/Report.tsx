@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useYear } from "./year";
-import type { DataItem, FunnelStep, StatsReport } from "./statsData";
+import type { DataItem, FunnelStep, StatsReport } from "../api/_lib/statsData";
 
 type ChartProps = {
   title: string;

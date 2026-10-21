@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import Database from 'better-sqlite3';
 import path from 'path';
-import { computeFacets, parseFilters, type QueryDb } from '../src/query';
+import { computeFacets, parseFilters, type QueryDb } from './_lib/query';
 
 const dbPath = path.join(process.cwd(), 'nasa_projects_2025.db');
 

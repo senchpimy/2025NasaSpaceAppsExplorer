@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import Database from 'better-sqlite3';
 import path from 'path';
-import { computeStats, type StatsDb } from '../src/statsData';
+import { computeStats, type StatsDb } from './_lib/statsData';
 
 const dbPath = path.join(process.cwd(), 'nasa_projects_2025.db');
 const AVAILABLE_YEARS = [2025, 2024, 2023];

@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useYear } from "./year";
 import { BadgeTags } from "./BadgeTags";
-import type { AwardLevel, CountryFacet, Facets, ProjectResult, SortKey } from "./query";
+import type { AwardLevel, CountryFacet, Facets, ProjectResult, SortKey } from "../api/_lib/query";
 
 const PAGE_SIZE = 24;
 const AWARDS: Array<{ value: AwardLevel; label: string }> = [
